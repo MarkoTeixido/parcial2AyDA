@@ -1,0 +1,84 @@
+{
+  "name": "sistemaayda",
+  "version": "1.0.0",
+  "description": "Sistema AyDA - Análisis y Diseño de Algoritmos",
+  "license": "MIT",
+  "author": "MarkoTeixido",
+  "type": "commonjs",
+  "main": "src/main/main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder --win --x64",
+    "build:portable": "electron-builder --win portable --x64",
+    "build:nsis": "electron-builder --win nsis --x64",
+    "build-dir": "electron-builder --win --x64 --dir"
+  },
+  "devDependencies": {
+    "electron": "^38.3.0",
+    "electron-builder": "^26.0.12",
+    "tailwindcss": "^4.1.14"
+  },
+  "dependencies": {
+    "archiver": "^7.0.1"
+  },
+  "build": {
+    "appId": "com.ayda.algoritmos",
+    "productName": "AyDA-Algoritmos",
+    "directories": {
+      "output": "dist"
+    },
+    "asar": true,
+    "asarUnpack": [
+      "practicos/**"
+    ],
+    "files": [
+      "src/**/*",
+      "practicos/**/*",
+      "node_modules/**/*",
+      "package.json"
+    ],
+    "extraFiles": [
+      {
+        "from": "practicos",
+        "to": "practicos",
+        "filter": ["**/*"]
+      }
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64"]
+        },
+        {
+          "target": "portable",
+          "arch": ["x64"]
+        },
+        {
+          "target": "msi",
+          "arch": ["x64"]
+        }
+      ],
+      "icon": "icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "AyDA Algoritmos",
+      "deleteAppDataOnUninstall": false,
+      "runAfterFinish": false
+    },
+    "portable": {
+      "artifactName": "${productName}-${version}-portable.exe"
+    },
+    "msi": {
+      "oneClick": false,
+      "perMachine": false,
+      "runAfterFinish": false,
+      "createDesktopShortcut": false,
+      "createStartMenuShortcut": false
+    }
+  }
+}

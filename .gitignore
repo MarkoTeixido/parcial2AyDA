@@ -1,0 +1,69 @@
+# ───────────────────────────────
+# Node / NPM
+# ───────────────────────────────
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# ───────────────────────────────
+# Build / Distribución
+# ───────────────────────────────
+dist/
+out/
+release/
+build/
+*.asar
+
+# ───────────────────────────────
+# Electron
+# ───────────────────────────────
+/electron/dist
+/.webpack
+/.vite
+
+# Archivos temporales de electron-builder
+*.db
+*.lock
+
+# ───────────────────────────────
+# Archivos del sistema
+# ───────────────────────────────
+.DS_Store
+Thumbs.db
+
+# ───────────────────────────────
+# Ambiente / Configuración
+# ───────────────────────────────
+.env
+.env.*.local
+*.local
+
+# ───────────────────────────────
+# Tailwind / PostCSS / CSS
+# (No suele generar archivos ignorables, pero por las dudas)
+# ───────────────────────────────
+*.css.map
+
+# ───────────────────────────────
+# Logs
+# ───────────────────────────────
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+
+# ───────────────────────────────
+# Editor files
+# ───────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ───────────────────────────────
+# Windows / Mac metadata
+# ───────────────────────────────
+ehthumbs.db
+Desktop.ini
