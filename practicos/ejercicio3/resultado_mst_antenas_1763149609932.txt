@@ -1,0 +1,99 @@
+======================================================================
+EJERCICIO 3: DISEÑO DE RED DE ANTENAS - MST (30 PUNTOS)
+Algoritmo: Prim (Estrategia Greedy/Voraz)
+======================================================================
+
+MODELADO DEL PROBLEMA:
+Nodos (Antenas): {A, B, C, D, E, F, G, H, I, J, K}
+Nodo inicial: B
+
+LISTA DE ADYACENCIA:
+A → [J(12km), I(6km), H(10km), K(3km), B(8km), G(9km)]
+B → [K(7km), A(8km), C(10km), E(2km)]
+C → [K(5km), B(10km), D(9km)]
+D → [C(9km), E(13km), F(12km)]
+E → [B(2km), G(6km), D(13km), F(10km)]
+F → [E(10km), D(12km), G(8km)]
+G → [A(9km), E(6km), H(7km), F(8km)]
+H → [I(3km), A(10km), G(7km)]
+I → [J(10km), H(3km), A(6km)]
+J → [I(10km), K(8km), A(12km)]
+K → [J(8km), A(3km), C(5km), B(7km)]
+
+======================================================================
+EJECUCIÓN PASO A PASO:
+======================================================================
+
+Paso 0: Iniciando desde el nodo B
+  Visitados: {B}
+  Distancia acumulada: 0 km
+
+Paso 1: Seleccionar arista de menor peso disponible
+  Arista: B -- E (2 km)
+  Visitados: {B, E}
+  Distancia acumulada: 2 km
+
+Paso 2: Seleccionar arista de menor peso disponible
+  Arista: E -- G (6 km)
+  Visitados: {B, E, G}
+  Distancia acumulada: 8 km
+
+Paso 3: Seleccionar arista de menor peso disponible
+  Arista: B -- K (7 km)
+  Visitados: {B, E, G, K}
+  Distancia acumulada: 15 km
+
+Paso 4: Seleccionar arista de menor peso disponible
+  Arista: K -- A (3 km)
+  Visitados: {B, E, G, K, A}
+  Distancia acumulada: 18 km
+
+Paso 5: Seleccionar arista de menor peso disponible
+  Arista: K -- C (5 km)
+  Visitados: {B, E, G, K, A, C}
+  Distancia acumulada: 23 km
+
+Paso 6: Seleccionar arista de menor peso disponible
+  Arista: A -- I (6 km)
+  Visitados: {B, E, G, K, A, C, I}
+  Distancia acumulada: 29 km
+
+Paso 7: Seleccionar arista de menor peso disponible
+  Arista: I -- H (3 km)
+  Visitados: {B, E, G, K, A, C, I, H}
+  Distancia acumulada: 32 km
+
+Paso 8: Seleccionar arista de menor peso disponible
+  Arista: G -- F (8 km)
+  Visitados: {B, E, G, K, A, C, I, H, F}
+  Distancia acumulada: 40 km
+
+Paso 9: Seleccionar arista de menor peso disponible
+  Arista: K -- J (8 km)
+  Visitados: {B, E, G, K, A, C, I, H, F, J}
+  Distancia acumulada: 48 km
+
+Paso 10: Seleccionar arista de menor peso disponible
+  Arista: C -- D (9 km)
+  Visitados: {B, E, G, K, A, C, I, H, F, J, D}
+  Distancia acumulada: 57 km
+
+======================================================================
+RESULTADO FINAL:
+======================================================================
+
+Aristas del Árbol de Expansión Mínima:
+1. B -- E (2 km)
+2. E -- G (6 km)
+3. B -- K (7 km)
+4. K -- A (3 km)
+5. K -- C (5 km)
+6. A -- I (6 km)
+7. I -- H (3 km)
+8. G -- F (8 km)
+9. K -- J (8 km)
+10. C -- D (9 km)
+
+DISTANCIA TOTAL: 57 km
+Total de aristas: 10
+Total de nodos conectados: 11

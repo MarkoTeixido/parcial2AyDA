@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visualización MST - Red de Antenas</title>
+    <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 18px;
+        }
+        #mynetwork {
+            width: 100%;
+            height: 600px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            background: #fafafa;
+        }
+        .info-panel {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 30px;
+        }
+        .info-box {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+        .info-box h3 {
+            margin-top: 0;
+            color: #667eea;
+        }
+        .mst-list {
+            list-style: none;
+            padding: 0;
+        }
+        .mst-list li {
+            padding: 8px;
+            margin: 5px 0;
+            background: white;
+            border-radius: 5px;
+            border-left: 3px solid #28a745;
+        }
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .legend-line {
+            width: 50px;
+            height: 4px;
+            border-radius: 2px;
+        }
+        .legend-line.mst {
+            background: #28a745;
+        }
+        .legend-line.original {
+            background: #cccccc;
+        }
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        .stat-item {
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 32px;
+            font-weight: bold;
+        }
+        .stat-label {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🗼 Red de Antenas - Árbol de Expansión Mínima</h1>
+        <p class="subtitle">Algoritmo de Prim (Estrategia Greedy)</p>
+
+        <div class="stats">
+            <div class="stat-item">
+                <div class="stat-value">57</div>
+                <div class="stat-label">km de cable total</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">10</div>
+                <div class="stat-label">aristas utilizadas</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">11</div>
+                <div class="stat-label">nodos conectados</div>
+            </div>
+        </div>
+
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-line mst"></div>
+                <span><strong>Aristas del MST</strong> (cables a instalar)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-line original"></div>
+                <span>Aristas no utilizadas</span>
+            </div>
+        </div>
+
+        <div id="mynetwork"></div>
+
+        <div class="info-panel">
+            <div class="info-box">
+                <h3>📋 Aristas del MST (Orden de Selección)</h3>
+                <ul class="mst-list">
+                    <li>1. B ← 2 km → E</li><li>2. E ← 6 km → G</li><li>3. B ← 7 km → K</li><li>4. K ← 3 km → A</li><li>5. K ← 5 km → C</li><li>6. A ← 6 km → I</li><li>7. I ← 3 km → H</li><li>8. G ← 8 km → F</li><li>9. K ← 8 km → J</li><li>10. C ← 9 km → D</li>
+                </ul>
+            </div>
+            <div class="info-box">
+                <h3>ℹ️ Información del Algoritmo</h3>
+                <p><strong>Algoritmo:</strong> Prim (Greedy)</p>
+                <p><strong>Nodo inicial:</strong> B</p>
+                <p><strong>Total de nodos:</strong> 11</p>
+                <p><strong>Total de aristas originales:</strong> 20</p>
+                <p><strong>Complejidad:</strong> O(E log V)</p>
+                <p><strong>Garantía:</strong> Solución óptima global</p>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        // Crear nodos
+        const nodes = new vis.DataSet([
+            
+            { 
+                id: 'A', 
+                label: 'A',
+                color: {
+                    background: '#4ECDC4',
+                    border: '#0CA789',
+                    highlight: {
+                        background: '#FFD93D',
+                        border: '#F57F17'
+                    }
+                },
+                font: { 
+                    size: 20, 
+                    color: 'white',
+                    bold: true
+                },
+                size: 25
+            },
+            { 
+                id: 'B', 
+                label: 'B',
+                color: {
+                    background: '#FF6B6B',
+                    border: '#C92A2A',
+                    highlight: {
+                        background: '#FFD93D',
+                        border: '#F57F17'
+                    }
+                },
+                font: { 
+                    size: 20, 
+                    color: 'white',
+                    bold: true
+                },
+                size: 35
+            },
+            { 
+                id: 'C', 
+                label: 'C',
+                color: {
+                    background: '#4ECDC4',
+                    border: '#0CA789',
+                    highlight: {
+                        background: '#FFD93D',
+                        border: '#F57F17'
+                    }
+                },
+                font: { 
+                    size: 20, 
+                    color: 'white',
+                    bold: true
+                },
+                size: 25
+            },
+            { 
+                id: 'D', 
+                label: 'D',
+                color: {
+                    background: '#4ECDC4',
+                    border: '#0CA789',
+                    highlight: {
+                        background: '#FFD93D',
+                        border: '#F57F17'
+                    }
+                },
+                font: { 
+                    size: 20, 
+                    color: 'white',
+                    bold: true
+                },
+                size: 25
+            },
+            { 
+                id: 'E', 
+                label: 'E',
+                color: {
+                    background: '#4ECDC4',
+                    border: '#0CA789',
+                    highlight: {
+                        background: '#FFD93D',
+                        border: '#F57F17'
+                    }
+                },
+                font: { 
+                    size: 20, 
+                    color: 'white',
+                    bold: true
+                },
+                size: 25
+            },
+            { 
+                id: 'F', 
+                label: 'F',
+                color: {
+                    background: '#4ECDC4',
+                    border: '#0CA789',
+                    highlight: {
+                        background: '#FFD93D',
+                        border: '#F57F17'
+                    }
+                },
+                font: { 
+                    size: 20, 
+                    color: 'white',
+                    bold: true
+                },
+                size: 25
+            },
+            { 
+                id: 'G', 
+                label: 'G',
+                color: {
+                    background: '#4ECDC4',
+                    border: '#0CA789',
+                    highlight: {
+                        background: '#FFD93D',
+                        border: '#F57F17'
+                    }
+                },
+                font: { 
+                    size: 20, 
+                    color: 'white',
+                    bold: true
+                },
+                size: 25
+            },
+            { 
+                id: 'H', 
+                label: 'H',
+                color: {
+                    background: '#4ECDC4',
+                    border: '#0CA789',
+                    highlight: {
+                        background: '#FFD93D',
+                        border: '#F57F17'
+                    }
+                },
+                font: { 
+                    size: 20, 
+                    color: 'white',
+                    bold: true
+                },
+                size: 25
+            },
+            { 
+                id: 'I', 
+                label: 'I',
+                color: {
+                    background: '#4ECDC4',
+                    border: '#0CA789',
+                    highlight: {
+                        background: '#FFD93D',
+                        border: '#F57F17'
+                    }
+                },
+                font: { 
+                    size: 20, 
+                    color: 'white',
+                    bold: true
+                },
+                size: 25
+            },
+            { 
+                id: 'J', 
+                label: 'J',
+                color: {
+                    background: '#4ECDC4',
+                    border: '#0CA789',
+                    highlight: {
+                        background: '#FFD93D',
+                        border: '#F57F17'
+                    }
+                },
+                font: { 
+                    size: 20, 
+                    color: 'white',
+                    bold: true
+                },
+                size: 25
+            },
+            { 
+                id: 'K', 
+                label: 'K',
+                color: {
+                    background: '#4ECDC4',
+                    border: '#0CA789',
+                    highlight: {
+                        background: '#FFD93D',
+                        border: '#F57F17'
+                    }
+                },
+                font: { 
+                    size: 20, 
+                    color: 'white',
+                    bold: true
+                },
+                size: 25
+            }
+        ]);
+
+        // Crear aristas
+        const edges = new vis.DataSet([
+            {
+                    from: 'A',
+                    to: 'J',
+                    label: '12 km',
+                    color: {
+                        color: '#cccccc',
+                        highlight: '#FFD93D'
+                    },
+                    width: 2,
+                    font: { 
+                        size: 14, 
+                        background: 'white',
+                        strokeWidth: 0,
+                        color: '#666'
+                    },
+                    smooth: { type: 'curvedCW', roundness: 0.1 }
+                },{
+                    from: 'A',
+                    to: 'I',
+                    label: '6 km',
+                    color: {
+                        color: '#28a745',
+                        highlight: '#FFD93D'
+                    },
+                    width: 5,
+                    font: { 
+                        size: 14, 
+                        background: 'white',
+                        strokeWidth: 0,
+                        color: '#28a745'
+                    },
+                    smooth: { type: 'curvedCW', roundness: 0.1 }
+                },{
+                    from: 'A',
+                    to: 'H',
+                    label: '10 km',
+                    color: {
+                        color: '#cccccc',
+                        highlight: '#FFD93D'
+                    },
+                    width: 2,
+                    font: { 
+                        size: 14, 
+                        background: 'white',
+                        strokeWidth: 0,
+                        color: '#666'
+                    },
+                    smooth: { type: 'curvedCW', roundness: 0.1 }
+                },{
+                    from: 'A',
+                    to: 'K',
+                    label: '3 km',
+                    color: {
+                        color: '#28a745',
+                        highlight: '#FFD93D'
+                    },
+                    width: 5,
+                    font: { 
+                        size: 14, 
+                        background: 'white',
+                        strokeWidth: 0,
+                        color: '#28a745'
+                    },
+                    smooth: { type: 'curvedCW', roundness: 0.1 }
+                },{
+                    from: 'A',
+                    to: 'B',
+                    label: '8 km',
+                    color: {
+                        color: '#cccccc',
+                        highlight: '#FFD93D'
+                    },
+                    width: 2,
+                    font: { 
+                        size: 14, 
+                        background: 'white',
+                        strokeWidth: 0,
+                        color: '#666'
+                    },
+                    smooth: { type: 'curvedCW', roundness: 0.1 }
+                },{
+                    from: 'A',
+                    to: 'G',
+                    label: '9 km',
+                    color: {
+                        color: '#cccccc',
+                        highlight: '#FFD93D'
+                    },
+                    width: 2,
+                    font: { 
+                        size: 14, 
+                        background: 'white',
+                        strokeWidth: 0,
+                        color: '#666'
+                    },
+                    smooth: { type: 'curvedCW', roundness: 0.1 }
+                },{
+                    from: 'B',
+                    to: 'K',
+                    label: '7 km',
+                    color: {
+                        color: '#28a745',
+                        highlight: '#FFD93D'
+                    },
+                    width: 5,
+                    font: { 
+                        size: 14, 
+                        background: 'white',
+                        strokeWidth: 0,
+                        color: '#28a745'
+                    },
+                    smooth: { type: 'curvedCW', roundness: 0.1 }
+                },{
+                    from: 'B',
+                    to: 'C',
+                    label: '10 km',
+                    color: {
+                        color: '#cccccc',
+                        highlight: '#FFD93D'
+                    },
+                    width: 2,
+                    font: { 
+                        size: 14, 
+                        background: 'white',
+                        strokeWidth: 0,
+                        color: '#666'
+                    },
+                    smooth: { type: 'curvedCW', roundness: 0.1 }
+                },{
+                    from: 'B',
+                    to: 'E',
+                    label: '2 km',
+                    color: {
+                        color: '#28a745',
+                        highlight: '#FFD93D'
+                    },
+                    width: 5,
+                    font: { 
+                        size: 14, 
+                        background: 'white',
+                        strokeWidth: 0,
+                        color: '#28a745'
+                    },
+                    smooth: { type: 'curvedCW', roundness: 0.1 }
+                },{
+                    from: 'C',
+                    to: 'K',
+                    label: '5 km',
+                    color: {
+                        color: '#28a745',
+                        highlight: '#FFD93D'
+                    },
+                    width: 5,
+                    font: { 
+                        size: 14, 
+                        background: 'white',
+                        strokeWidth: 0,
+                        color: '#28a745'
+                    },
+                    smooth: { type: 'curvedCW', roundness: 0.1 }
+                },{
+                    from: 'C',
+                    to: 'D',
+                    label: '9 km',
+                    color: {
+                        color: '#28a745',
+                        highlight: '#FFD93D'
+                    },
+                    width: 5,
+                    font: { 
+                        size: 14, 
+                        background: 'white',
+                        strokeWidth: 0,
+                        color: '#28a745'
+                    },
+                    smooth: { type: 'curvedCW', roundness: 0.1 }
+                },{
+                    from: 'D',
+                    to: 'E',
+                    label: '13 km',
+                    color: {
+                        color: '#cccccc',
+                        highlight: '#FFD93D'
+                    },
+                    width: 2,
+                    font: { 
+                        size: 14, 
+                        background: 'white',
+                        strokeWidth: 0,
+                        color: '#666'
+                    },
+                    smooth: { type: 'curvedCW', roundness: 0.1 }
+                },{
+                    from: 'D',
+                    to: 'F',
+                    label: '12 km',
+                    color: {
+                        color: '#cccccc',
+                        highlight: '#FFD93D'
+                    },
+                    width: 2,
+                    font: { 
+                        size: 14, 
+                        background: 'white',
+                        strokeWidth: 0,
+                        color: '#666'
+                    },
+                    smooth: { type: 'curvedCW', roundness: 0.1 }
+                },{
+                    from: 'E',
+                    to: 'G',
+                    label: '6 km',
+                    color: {
+                        color: '#28a745',
+                        highlight: '#FFD93D'
+                    },
+                    width: 5,
+                    font: { 
+                        size: 14, 
+                        background: 'white',
+                        strokeWidth: 0,
+                        color: '#28a745'
+                    },
+                    smooth: { type: 'curvedCW', roundness: 0.1 }
+                },{
+                    from: 'E',
+                    to: 'F',
+                    label: '10 km',
+                    color: {
+                        color: '#cccccc',
+                        highlight: '#FFD93D'
+                    },
+                    width: 2,
+                    font: { 
+                        size: 14, 
+                        background: 'white',
+                        strokeWidth: 0,
+                        color: '#666'
+                    },
+                    smooth: { type: 'curvedCW', roundness: 0.1 }
+                },{
+                    from: 'F',
+                    to: 'G',
+                    label: '8 km',
+                    color: {
+                        color: '#28a745',
+                        highlight: '#FFD93D'
+                    },
+                    width: 5,
+                    font: { 
+                        size: 14, 
+                        background: 'white',
+                        strokeWidth: 0,
+                        color: '#28a745'
+                    },
+                    smooth: { type: 'curvedCW', roundness: 0.1 }
+                },{
+                    from: 'G',
+                    to: 'H',
+                    label: '7 km',
+                    color: {
+                        color: '#cccccc',
+                        highlight: '#FFD93D'
+                    },
+                    width: 2,
+                    font: { 
+                        size: 14, 
+                        background: 'white',
+                        strokeWidth: 0,
+                        color: '#666'
+                    },
+                    smooth: { type: 'curvedCW', roundness: 0.1 }
+                },{
+                    from: 'H',
+                    to: 'I',
+                    label: '3 km',
+                    color: {
+                        color: '#28a745',
+                        highlight: '#FFD93D'
+                    },
+                    width: 5,
+                    font: { 
+                        size: 14, 
+                        background: 'white',
+                        strokeWidth: 0,
+                        color: '#28a745'
+                    },
+                    smooth: { type: 'curvedCW', roundness: 0.1 }
+                },{
+                    from: 'I',
+                    to: 'J',
+                    label: '10 km',
+                    color: {
+                        color: '#cccccc',
+                        highlight: '#FFD93D'
+                    },
+                    width: 2,
+                    font: { 
+                        size: 14, 
+                        background: 'white',
+                        strokeWidth: 0,
+                        color: '#666'
+                    },
+                    smooth: { type: 'curvedCW', roundness: 0.1 }
+                },{
+                    from: 'J',
+                    to: 'K',
+                    label: '8 km',
+                    color: {
+                        color: '#28a745',
+                        highlight: '#FFD93D'
+                    },
+                    width: 5,
+                    font: { 
+                        size: 14, 
+                        background: 'white',
+                        strokeWidth: 0,
+                        color: '#28a745'
+                    },
+                    smooth: { type: 'curvedCW', roundness: 0.1 }
+                }
+        ]);
+
+        // Crear el grafo
+        const container = document.getElementById('mynetwork');
+        const data = { nodes: nodes, edges: edges };
+        const options = {
+            physics: {
+                enabled: true,
+                solver: 'forceAtlas2Based',
+                stabilization: {
+                    iterations: 150
+                },
+                forceAtlas2Based: {
+                    gravitationalConstant: -50,
+                    springLength: 150,
+                    springConstant: 0.05
+                }
+            },
+            interaction: {
+                hover: true,
+                tooltipDelay: 100,
+                dragNodes: true,
+                dragView: true,
+                zoomView: true
+            }
+        };
+
+        const network = new vis.Network(container, data, options);
+
+        // Estabilizar y ajustar vista
+        network.once('stabilizationIterationsDone', function() {
+            network.fit({
+                animation: {
+                    duration: 1000,
+                    easingFunction: 'easeInOutQuad'
+                }
+            });
+        });
+    </script>
+</body>
+</html>

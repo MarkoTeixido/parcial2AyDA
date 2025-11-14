@@ -1,93 +1,23 @@
 // Configuración de los TPs
 const TPS = [
     {
-        id: 'TP1',
-        title: 'TP1: Algoritmo de Ordenamiento Burbuja',
-        description: 'Implementa el algoritmo Bubble Sort para ordenar \'n\' números aleatorios y compara su rendimiento.',
+        id: 'ejercicio1',
+        title: 'Ejercicio 1: Solucionador de Sudoku (35 puntos)',
+        description: 'Resuelve instancias válidas de Sudoku utilizando técnica de resolución exacta (Backtracking).',
         color: 'green'
     },
     {
-        id: 'TP2',
-        title: 'TP2: Algoritmo de Fuerza Bruta',
-        description: 'Búsqueda de patrones en texto utilizando el algoritmo de fuerza bruta para encontrar coincidencias exactas.',
+        id: 'ejercicio2',
+        title: 'Ejercicio 2: Compresión de Datos - Codificación de Huffman (35 puntos)',
+        description: 'Comprime texto usando el esquema de codificación prefijo óptimo de Huffman, analizando frecuencias y reducción de bits.',
         color: 'blue'
     },
     {
-        id: 'TP3-A',
-        title: 'TP3-A: Algoritmo Selection Sort',
-        description: 'Ordenamiento por selección sobre \'n\' cantidad de datos, analizando comparaciones y swaps realizados.',
-        color: 'purple'
+        id: 'ejercicio3',
+        title: 'Ejercicio 3: Red de Antenas - Árbol de Expansión Mínima (30 puntos)',
+        description: 'Diseña una red de comunicaciones que conecte todas las antenas minimizando la longitud total de cable usando el algoritmo de Prim (Greedy).',
+        color: 'gray'
     },
-    {
-        id: 'TP3-B',
-        title: 'TP3-B: Algoritmo TSP (Problema del Viajante)',
-        description: 'Resuelve el Traveling Salesman Problem mediante fuerza bruta, encontrando la ruta óptima entre puntos.',
-        color: 'purple'
-    },
-    {
-        id: 'TP3-C',
-        title: 'TP3-C: Algoritmo Knapsack (Problema de la Mochila)',
-        description: 'Optimiza la selección de items para maximizar valor con restricción de peso usando algoritmo de fuerza bruta.',
-        color: 'purple'
-    },
-    {
-        id: 'TP5-A',
-        title: 'TP5-A: Algoritmo de Generación de Binarios',
-        description: 'Genera un archivo con cadenas aleatorias e inserta una clave oculta en algunas líneas.',
-        color: 'orange'
-    },
-    {
-        id: 'TP5-B',
-        title: 'TP5-B: Cálculo de Mediana - Comparación de Algoritmos',
-        description: 'Calcula la mediana de 10 millones de datos usando distintos algoritmos y compara su rendimiento teórico vs. práctico.',
-        color: 'orange',
-        multipleScripts: true
-    },
-    {
-        id: 'TP5-C1',
-        title: 'TP5-C1: Problema del Cambio de Monedas',
-        description: 'Resuelve el problema del cambio usando diferentes estrategias algorítmicas.',
-        color: 'orange',
-        multipleScripts: true
-    },
-    {
-        id: 'TP5-C2',
-        title: 'TP5-C2: Problema de la Mochila - Múltiples Enfoques',
-        description: 'Implementa distintos algoritmos para resolver el problema de la mochila.',
-        color: 'orange',
-        multipleScripts: true
-    },
-    {
-        id: 'TP5-D1',
-        title: 'TP5-D1: Ejercicio 4 - Parte A',
-        description: 'Implementación del ejercicio 4, parte A.',
-        color: 'orange'
-    },
-    {
-        id: 'TP5-D2',
-        title: 'TP5-D2: Ejercicio 4 - Parte B',
-        description: 'Implementación del ejercicio 4, parte B.',
-        color: 'orange'
-    },
-    {
-        id: 'TP5-D3',
-        title: 'TP5-D3: Ejercicio 4 - Parte C',
-        description: 'Implementación del ejercicio 4, parte C.',
-        color: 'orange'
-    },
-    {
-        id: 'TP6-A',
-        title: 'TP6-A: Búsqueda de Palabras en Crucigrama',
-        description: 'Detecta palabras en una grilla 20×20 aplicando algoritmos clásicos (fuerza bruta, binaria, árboles) y analiza su rendimiento empírico vs. teórico.',
-        color: 'teal',
-        multipleScripts: true
-    },
-    {
-        id: 'TP6-B',
-        title: 'TP6-B: Árbol AVL - Inserción y Balance',
-        description: 'Construye un árbol AVL con inserciones secuenciales, aplicando rotaciones y cálculo de alturas para mantener el equilibrio estructural.',
-        color: 'teal'
-    }
 
 ];
 
